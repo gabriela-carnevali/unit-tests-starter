@@ -4,9 +4,8 @@ test.beforeEach(async ({ page, request }) => {
   const resposta = await request.post("http://localhost:3000/__reset");
   expect(resposta.status()).toBe(204);
   await page.goto("/");
+  await page.getByRole("button", { name: "Clientes" }).click();
 });
-
-await page.getByRole("button", { name: "Clientes" }).click();
 
 test("C1: lista todos os clientes iniciais", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Clientes" })).toBeVisible();
