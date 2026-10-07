@@ -1,5 +1,5 @@
 const request = require('supertest');
-const createApp = require('../app');
+const createApp = require('../../app');
 
 // Teste de integracao: testa a API de ponta a ponta via HTTP real.
 // Cada teste recebe uma app nova (factory), garantindo estado isolado.

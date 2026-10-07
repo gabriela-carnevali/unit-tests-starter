@@ -1,4 +1,4 @@
-const ProdutoService = require("../services/ProdutoService");
+const ProdutoService = require("../../services/ProdutoService");
 
 describe("ProdutoService - Testes Unitários com Mocks", () => {
   let service;
