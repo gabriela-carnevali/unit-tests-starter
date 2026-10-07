@@ -15,12 +15,14 @@ test.beforeEach(async ({ page, request }) => {
 test("P1: Lista os pedidos iniciais", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Pedidos" })).toBeVisible();
 
-  const linhaPedido1 = page.getByRole("row", { name: /#1/ });
+  const linhaPedido1 = page
+    .getByRole("row")
+    .filter({ has: page.getByRole("cell", { name: "1", exact: true }) });
   await expect(linhaPedido1).toContainText("Ana Souza");
   await expect(linhaPedido1).toContainText("2x Coxinha");
   await expect(page.getByRole("cell", { name: "R$ 10,00" })).toBeVisible();
 
-  const selectStatus = page.getByLabel("Status dp pedido 1");
+  const selectStatus = page.getByLabel("Status do pedido 1");
   await expect(selectStatus).toHaveValue("pendente");
 });
 
@@ -39,7 +41,7 @@ test("P2: Monta um pedido com um item", async ({ page }) => {
 
   //Garante que o formulário foi limpo
   await expect(page.getByLabel("Cliente")).toHaveValue("");
-  await expect(page.getByText("1x Pastel")).not.toBeVisible();
+  await expect(page.locator("ul")).toHaveCount(0);
 });
 
 test("P3: Monta um pedido com varios itens e quantidades", async ({ page }) => {
@@ -47,7 +49,11 @@ test("P3: Monta um pedido com varios itens e quantidades", async ({ page }) => {
 
   // 3x Coxinha (3 * 5 = 15)
   await page.getByLabel("Produto").selectOption({ label: "Coxinha" });
-  await page.getByLabel("Quantidade").fill("1");
+  await page.getByLabel("Quantidade").fill("3");
+  await page.getByRole("button", { name: "Adicionar item" }).click();
+
+  // 1x Empada (1 * 6 = 6)
+  await page.getByLabel("Produto").selectOption({ label: "Empada" });
   await page.getByRole("button", { name: "Adicionar item" }).click();
 
   await page.getByRole("button", { name: "Criar pedido" }).click();
@@ -101,7 +107,9 @@ test("P8: pedido cancelado nao pode ser alterado", async ({ page }) => {
 });
 
 test("P9: remove um pedido", async ({ page }) => {
-  const linhaPedido1 = page.getByRole("row", { name: /#1/ });
+  const linhaPedido1 = page
+    .getByRole("row")
+    .filter({ has: page.getByRole("cell", { name: "1", exact: true }) });
   await linhaPedido1.getByRole("button", { name: "Remover" }).click();
 
   await expect(linhaPedido1).toHaveCount(0);

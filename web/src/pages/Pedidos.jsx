@@ -22,15 +22,17 @@ export default function Pedidos() {
 
   function adicionarItem() {
     const produto = produtos.find((p) => p.id === Number(produtoId));
-    if (!produto) return;
-    setItens([
-      ...itens,
-      {
-        nome: produto.nome,
-        precoUnitario: produto.preco,
-        quantidade: Number(quantidade),
-      },
-    ]);
+    if (produto) {
+      setItens([
+        ...itens,
+        {
+          nome: produto.nome,
+          precoUnitario: produto.preco,
+          quantidade: Number(quantidade),
+        },
+      ]);
+    }
+    setProdutoId("");
     setQuantidade(1);
   }
 
@@ -39,6 +41,8 @@ export default function Pedidos() {
     try {
       await api("/pedidos", "POST", { cliente, itens });
       setCliente("");
+      setProdutoId("");
+      setQuantidade(1);
       setItens([]);
       setErro("");
       carregar();
